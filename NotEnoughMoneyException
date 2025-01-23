@@ -1,0 +1,62 @@
+class NotEnoughMoneyException extends Exception {
+    public NotEnoughMoneyException(String message) {
+        super(message);
+    }
+}
+
+class Account {
+    private String owner;
+    private int balance;
+    private int accountNumber;
+
+    public Account(String owner, int balance, int accountNumber) {
+        this.owner = owner;
+        this.balance = balance;
+        this.accountNumber = accountNumber;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public void withdrawal(int amount) throws NotEnoughMoneyException {
+        if (balance >= amount) {
+            balance -= amount;
+        } else {
+            throw new NotEnoughMoneyException("Not enough funds in the account.");
+        }
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        Account account1 = new Account("Jan Kowalski", 100, 12345);
+
+        try {
+            account1.withdrawal(150);
+        } catch (NotEnoughMoneyException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        } finally {
+            System.out.println("Finally: " + account1.getBalance());
+        }
+    }
+}
+
+class Example {
+    public static void main(String[] args) {
+        Account account = new Account("Iga Swiatek", 2000, 16346);
+
+        System.out.println("Initial value: " + account.getBalance());
+
+        try {
+            account.withdrawal(1000); // first withdrawal
+            account.withdrawal(1500); // second withdrawal
+        } catch (NotEnoughMoneyException error) {
+            System.out.println("An error during withdrawing occurred: " + error.getMessage());
+            error.printStackTrace();
+        } finally {
+            System.out.println("Final funds: " + account.getBalance());
+        }
+    }
+}
