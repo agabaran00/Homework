@@ -1,0 +1,47 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+
+class BankNameSearcher {
+    public static void main(String[] args) {
+
+        try {
+            System.out.print("Please enter the initial three digits of the bank account number: ");
+            BufferedReader userInputReader = new BufferedReader(new InputStreamReader(System.in));
+            String accountNumberPrefix = userInputReader.readLine();
+
+            if (accountNumberPrefix == null || accountNumberPrefix.isEmpty()) {
+                System.out.println("No input provided, exiting.");
+                return;
+            }
+
+            URL bankDataUrl = new URL("https://ewib.nbp.pl/plewibnra?dokNazwa=plewibnra.txt");
+            String bankInfo = findBankInfo(bankDataUrl, accountNumberPrefix);
+
+            if (bankInfo != null) {
+                System.out.println(bankInfo);
+            } else {
+                System.out.println("No bank found for the provided prefix.");
+            }
+
+        } catch (IOException error) {
+            System.err.println("An error occurred: " + error.getMessage());
+        }
+    }
+
+    private static String findBankInfo(URL bankDataUrl, String accountNumberPrefix) throws IOException {
+        BufferedReader bankDataReader = new BufferedReader(new InputStreamReader(bankDataUrl.openStream()));
+
+        String dataLine;
+        while ((dataLine = bankDataReader.readLine()) != null) {
+            String[] dataParts = dataLine.split("\\t+");
+            if (dataParts.length >= 2 && dataParts[0].startsWith(accountNumberPrefix)) {
+                return "Bank Name: " + dataParts[1] + "\nShortened Bank Number: " + dataParts[0];
+            }
+        }
+
+        bankDataReader.close();
+        return null;
+    }
+}
