@@ -1,0 +1,22 @@
+import java.io.*;
+
+class CopyFileHyphenateSpaces {
+    public static void main(String[] args) {
+        String sourceFile = "src/machupicchu1.txt";
+        String destinationFile = "src/machupicchu-hyphens.txt";
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(sourceFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(destinationFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Replace spaces with hyphens using a more concise method
+                line = line.replaceAll(" ", "-");
+                writer.write(line);
+                writer.newLine();
+            }
+            System.out.println("File copying completed.");
+        } catch (IOException error) {
+            System.err.println("An error occurred during file copying: " + error.getMessage());
+        }
+    }
+}
